@@ -1,16 +1,86 @@
+/* Apply clean font */
 body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  width: 200px;
-  padding: 10px;
+  font-family: "Poppins", sans-serif;
+  background: #f5f7fa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
 }
+
+.container {
+  width: 350px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+h2 {
+  color: #007bff;
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.device-list {
+  background: #eef2f7;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.device-list h3 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+ul li {
+  background: #d6e9ff;
+  padding: 5px;
+  margin: 5px 0;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.chat-box {
+  text-align: left;
+}
+
+.message-container {
+  height: 100px;
+  overflow-y: auto;
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  padding: 5px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+input {
+  width: calc(100% - 60px);
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-right: 5px;
+}
+
 button {
-  background-color: #007bff;
+  padding: 8px 12px;
+  background: #007bff;
   color: white;
   border: none;
-  padding: 8px;
+  border-radius: 5px;
   cursor: pointer;
+  transition: 0.3s;
 }
+
 button:hover {
-  background-color: #0056b3;
+  background: #0056b3;
 }

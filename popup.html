@@ -5,11 +5,18 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <h2>WiFi Share</h2>
-    <textarea id="messageInput" placeholder="Enter message"></textarea>
-    <button id="sendBtn">Send</button>
-    <h3>Received Messages:</h3>
-    <div id="messages"></div>
+    <div class="container">
+      <h2>WiFi Share</h2>
+
+      <div id="devices"></div>
+      <h3>Received Messages:</h3>
+      <div id="messages"></div>
+      <div>
+        <textarea id="messageInput" placeholder="Enter message"></textarea>
+      </div>
+      <button id="sendBtn" class="button">Send</button>
+    </div>
+
     <script src="popup.js"></script>
   </body>
 </html>

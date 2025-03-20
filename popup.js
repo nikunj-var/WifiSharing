@@ -4,11 +4,19 @@ const username = "User - " + Math.floor(Math.random() * 1000);
 
 socket.onopen = () => {
   console.log("Connected to websocket server");
+  socket.send(JSON.stringify({ type: "REGISTER", username: username }));
 };
 
 socket.onmessage = (e) => {
-  const recievedData = JSON.parse(e.data);
-  updateChat(recievedData.sender, recievedData.message, "recieved");
+  const data = JSON.parse(e.data);
+  console.log(data);
+  if (data.type === "DEVICE_LIST") {
+    console.log("function called");
+    console.log(data.devices);
+    updateDeviceList(data.devices);
+  } else if (data.type === "MESSAGE") {
+    updateChat(data.sender, data.message, "recieved");
+  }
 };
 
 document.getElementById("sendBtn").addEventListener("click", () => {
@@ -17,6 +25,7 @@ document.getElementById("sendBtn").addEventListener("click", () => {
   if (socket.readyState === WebSocket.OPEN) {
     if (message.trim() !== "") {
       const messageData = {
+        type: "MESSAGE",
         sender: username,
         message: message,
       };
@@ -33,21 +42,11 @@ document.getElementById("sendBtn").addEventListener("click", () => {
   }
 });
 
-// function showNotification(title, message) {
-//   chrome.notifictions.create({
-//     type: "basic",
-//     iconUrl: "icons/icon.png",
-//     title: title,
-//     message: message,
-//   });
-// }
-
 function updateChat(sender, message, type) {
-  console.log("📌 Updating Chat UI:", { sender, message, type });
   const messageBox = document.getElementById("messages");
 
   if (!messageBox) {
-    console.error("❌ Message container not found!");
+    console.error(" Message container not found!");
     return;
   }
   const newMessage = document.createElement("p");
@@ -59,4 +58,19 @@ function updateChat(sender, message, type) {
   }
   messageBox.appendChild(newMessage);
   messageBox.scrollTop = messageBox.scrollHeight;
+}
+
+function updateDeviceList(devices) {
+  const deviceListBox = document.getElementById("devices");
+  if (!deviceListBox) {
+    console.error(" deviceListBox not found!");
+    return;
+  }
+  deviceListBox.innerHTML = "<h3>Available Devices:</h3>";
+  devices.forEach((device) => {
+    const deviceItem = document.createElement("p");
+    deviceItem.textContent = device;
+    deviceListBox.appendChild(deviceItem);
+  });
+  console.log("update device list", devices);
 }
