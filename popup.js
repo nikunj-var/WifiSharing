@@ -14,15 +14,21 @@ socket.onmessage = (e) => {
     console.log("function called");
     console.log(data.devices);
     updateDeviceList(data.devices);
+  } else if (data.type === "FILE") {
+    displayRecievedFile(data.sender, data.fileName, data.fileData);
   } else if (data.type === "MESSAGE") {
     updateChat(data.sender, data.message, "recieved");
   }
 };
 
 document.getElementById("sendBtn").addEventListener("click", () => {
-  const message = document.getElementById("messageInput").value;
+  const message = document.getElementById("messageInput").value.trim();
+  const fileInput = document.getElementById("fileInput");
+  const file = fileInput.files[0];
 
-  if (socket.readyState === WebSocket.OPEN) {
+  let sent = false;
+
+  if (message !== "" && socket.readyState === WebSocket.OPEN) {
     if (message.trim() !== "") {
       const messageData = {
         type: "MESSAGE",
@@ -34,11 +40,30 @@ document.getElementById("sendBtn").addEventListener("click", () => {
       console.log("📤 Sent message:", messageData);
       updateChat("You", message, "sent");
       document.getElementById("messageInput").value = "";
-    } else {
-      console.log("Message is empty");
+      sent = true;
     }
-  } else {
-    alert("WebSocket connection is not open");
+  }
+
+  if (file && socket.readyState === WebSocket.OPEN) {
+    const reader = new FileReader();
+    reader.onload = function () {
+      const fileData = reader.result.split(",")[1];
+      socket.send(
+        JSON.stringify({
+          type: "FILE",
+          sender: username,
+          fileName: file.name,
+          fileData: fileData,
+        })
+      );
+    };
+    reader.readAsDataURL(file);
+    fileInput.value = "";
+    sent = true;
+  }
+  if (!sent) {
+    console.log("No message or file send");
+    alert("Please enter message or select a file");
   }
 });
 
@@ -73,4 +98,14 @@ function updateDeviceList(devices) {
     deviceListBox.appendChild(deviceItem);
   });
   console.log("update device list", devices);
+}
+
+function displayRecievedFile(sender, fileName, fileData) {
+  const fileInput = document.getElementById("messages");
+  const fileLink = document.createElement("a");
+  fileLink.href = `data:application/octet-stream;base64,${fileInput}`;
+  fileLink.download = fileName;
+  fileLink.innerHTML = `<b>${sender}:</b> ${fileName}(Click to download)`;
+  fileLink.style.display = "block";
+  fileInput.appendChild(fileLink);
 }

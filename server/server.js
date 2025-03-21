@@ -22,33 +22,33 @@ wss.on("connection", (ws) => {
         return;
       }
 
-      // const text = data.toString();
-      // if (!text.startsWith("{")) {
-      //   console.log(`recieved a plain text message: "${text}"`);
+      // if (!messageData.sender || !messageData.message) {
+      //   console.log("⚠️ Received an invalid message:", data);
       //   return;
       // }
-
-      // messageData = JSON.parse(text);
-
-      if (!messageData.sender || !messageData.message) {
-        console.log("⚠️ Received an invalid message:", data);
-        return;
-      }
-
-      if (messageData.type === "MESSAGE") {
+      if (messageData.type === "FILE") {
+        console.log(
+          `Received from ${clients.get(ws)}: ${messageData.FileName}`
+        );
+        broadCast(
+          {
+            type: "FILE",
+            sender: clients.get(ws),
+            fileName: messageData.fileName,
+            fileData: messageData.fileData,
+          },
+          ws
+        );
+      } else if (messageData.type === "MESSAGE") {
         console.log(`Received from ${clients.get(ws)}: ${messageData.message}`);
-
-        wss.clients.forEach((client) => {
-          if (client !== ws && client.readyState === WebSocket.OPEN) {
-            client.send(
-              JSON.stringify({
-                type: "MESSAGE",
-                sender: clients.get(ws),
-                message: messageData.message,
-              })
-            );
-          }
-        });
+        broadCast(
+          {
+            type: "MESSAGE",
+            sender: clients.get(ws),
+            message: messageData.message,
+          },
+          ws
+        );
       }
     } catch (err) {
       console.log(err);
@@ -71,5 +71,13 @@ function broadCastDeviceList() {
     }
   });
   console.log("Updated devices list send", deviceList);
+}
+
+function broadCast(data, ws) {
+  wss.clients.forEach((client) => {
+    if (client !== ws && client.readyState === WebSocket.OPEN) {
+      client.send(JSON.stringify(data));
+    }
+  });
 }
 server.listen(3000, () => console.log("Websocket server running on port 3000"));
