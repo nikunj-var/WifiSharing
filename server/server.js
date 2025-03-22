@@ -1,31 +1,27 @@
 const WebSocket = require("ws");
 const express = require("express");
-const { type } = require("os");
+const os = require("os");
 
 const app = express();
 const server = require("http").createServer(app);
 const wss = new WebSocket.Server({ server });
 
 let clients = new Map();
+const deviceName = os.hostname();
 
 wss.on("connection", (ws) => {
   // clients.add(ws);
-  console.log("New Client connected.");
+  console.log(`${deviceName} connected`);
+  clients.set(ws, deviceName);
 
   ws.on("message", (data) => {
     try {
       const messageData = JSON.parse(data);
       if (messageData.type === "REGISTER") {
-        clients.set(ws, messageData.username);
-        console.log(`Registered client - ${messageData.username}`);
+        console.log(`Registered client - ${clients.get(ws)}`);
         broadCastDeviceList();
         return;
       }
-
-      // if (!messageData.sender || !messageData.message) {
-      //   console.log("⚠️ Received an invalid message:", data);
-      //   return;
-      // }
       if (messageData.type === "FILE") {
         console.log(
           `Received from ${clients.get(ws)}: ${messageData.FileName}`
@@ -64,7 +60,11 @@ wss.on("connection", (ws) => {
 
 function broadCastDeviceList() {
   const deviceList = Array.from(clients.values());
-  const message = JSON.stringify({ type: "DEVICE_LIST", devices: deviceList });
+  const message = JSON.stringify({
+    type: "DEVICE_LIST",
+    devices: deviceList,
+    user: deviceName,
+  });
   wss.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) {
       client.send(message);

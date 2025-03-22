@@ -1,6 +1,6 @@
 const socket = new WebSocket("ws://localhost:3000");
 
-const username = "User - " + Math.floor(Math.random() * 1000);
+const username = "";
 
 socket.onopen = () => {
   console.log("Connected to websocket server");
@@ -11,9 +11,8 @@ socket.onmessage = (e) => {
   const data = JSON.parse(e.data);
   console.log(data);
   if (data.type === "DEVICE_LIST") {
-    console.log("function called");
     console.log(data.devices);
-    updateDeviceList(data.devices);
+    updateDeviceList(data.devices, data.user);
   } else if (data.type === "FILE") {
     displayRecievedFile(data.sender, data.fileName, data.fileData);
   } else if (data.type === "MESSAGE") {
@@ -85,7 +84,7 @@ function updateChat(sender, message, type) {
   messageBox.scrollTop = messageBox.scrollHeight;
 }
 
-function updateDeviceList(devices) {
+function updateDeviceList(devices, user) {
   const deviceListBox = document.getElementById("devices");
   if (!deviceListBox) {
     console.error(" deviceListBox not found!");
@@ -94,7 +93,11 @@ function updateDeviceList(devices) {
   deviceListBox.innerHTML = "<h3>Available Devices:</h3>";
   devices.forEach((device) => {
     const deviceItem = document.createElement("p");
-    deviceItem.textContent = device;
+    if (device === user) {
+      deviceItem.textContent = device + " (you)";
+    } else {
+      deviceItem.textContent = device;
+    }
     deviceListBox.appendChild(deviceItem);
   });
   console.log("update device list", devices);
