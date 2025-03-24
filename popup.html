@@ -17,9 +17,17 @@
       <div id="devices"></div>
       <h3>Received Messages:</h3>
       <div id="messages"></div>
-      <div>
+      <div class="messageBox">
         <textarea id="messageInput" placeholder="Enter message"></textarea>
-        <input type="file" id="fileInput" />
+        <!-- <input type="file" id="fileInput" /> -->
+        <label for="fileInput" class="file-label">
+          <img
+            src="https://cdn-icons-png.flaticon.com/128/724/724933.png"
+            alt="Upload"
+            class="file-icon"
+          />
+        </label>
+        <input type="file" id="fileInput" class="file-input" />
       </div>
       <button id="sendBtn" class="button">Send</button>
     </div>

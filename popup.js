@@ -84,10 +84,87 @@ function updateChat(sender, message, type) {
   messageBox.scrollTop = messageBox.scrollHeight;
 }
 
+// function updateDeviceList(devices, user) {
+//   const deviceListBox = document.getElementById("devices");
+
+//   const selectedDevices = new Set();
+
+//   if (!deviceListBox) {
+//     console.error("deviceListBox not found!");
+//     return;
+//   }
+//   deviceListBox.innerHTML = "<h3>Available Devices:</h3>";
+
+//   const dropdown = document.createElement("div");
+//   dropdown.classList.add("custom-dropdown");
+
+//   const dropdownButton = document.createElement("button");
+//   dropdownButton.textContent = "Select a device";
+//   dropdownButton.classList.add("dropdown-button");
+
+//   const dropdownList = document.createElement("ul");
+//   dropdownList.classList.add("dropdown-list"); // ✅ Fixed
+
+//   devices.forEach((device) => {
+//     const deviceItem = document.createElement("li");
+//     deviceItem.classList.add("dropdown-item");
+
+//     const checkbox = document.createElement("input");
+//     checkbox.type = "checkbox";
+//     checkbox.value = device; // ✅ Fixed
+
+//     checkbox.style.marginRight = "8px";
+
+//     const userIcon = document.createElement("img");
+//     userIcon.src =
+//       "https://cdn-icons-png.freepik.com/256/14550/14550467.png?semt=ais_hybrid";
+//     userIcon.alt = "UserIcon";
+//     userIcon.style.width = "20px";
+//     userIcon.style.height = "20px";
+//     userIcon.style.marginRight = "5px";
+
+//     const deviceText = document.createElement("span");
+//     deviceText.textContent = device === user ? `${device} (you)` : device; // ✅ Fixed
+//     deviceText.style.width = "200px";
+//     deviceItem.appendChild(checkbox);
+//     deviceItem.appendChild(userIcon);
+//     deviceItem.appendChild(deviceText);
+//     dropdownList.appendChild(deviceItem);
+
+//     deviceItem.addEventListener("change", (e) => {
+//       e.stopPropagation();
+//       checkbox.checked = !checkbox.checked;
+
+//       if (checkbox.checked) {
+//         selectedDevices.add(device);
+//       } else {
+//         selectedDevices.delete(device);
+//       }
+
+//       updateDropdownButton();
+//     });
+//   });
+
+//   function updateDropdownButton() {
+//     if (selectedDevices.size > 0) {
+//       dropdownButton.textContent = Array.from(selectedDevices).join(", ");
+//     } else {
+//       dropdownButton.textContent = "Select devices";
+//     }
+//   }
+
+//   dropdownButton.addEventListener("click", () => {
+//     dropdownList.classList.toggle("show");
+//   });
+
+//   dropdown.appendChild(dropdownButton);
+//   dropdown.appendChild(dropdownList);
+//   deviceListBox.appendChild(dropdown);
+
+//   console.log("Updated device list:", devices);
+// }
 function updateDeviceList(devices, user) {
   const deviceListBox = document.getElementById("devices");
-
-  const selectedDevices = new Set();
 
   if (!deviceListBox) {
     console.error("deviceListBox not found!");
@@ -95,72 +172,49 @@ function updateDeviceList(devices, user) {
   }
   deviceListBox.innerHTML = "<h3>Available Devices:</h3>";
 
-  const dropdown = document.createElement("div");
-  dropdown.classList.add("custom-dropdown");
+  const selectedDevices = new Set();
 
-  const dropdownButton = document.createElement("button");
-  dropdownButton.textContent = "Select a device";
-  dropdownButton.classList.add("dropdown-button");
-
-  const dropdownList = document.createElement("ul");
-  dropdownList.classList.add("dropdown-list"); // ✅ Fixed
+  const deviceContainer = document.createElement("div");
+  deviceContainer.classList.add("device-container");
 
   devices.forEach((device) => {
-    const deviceItem = document.createElement("li");
-    deviceItem.classList.add("dropdown-item");
+    const deviceRow = document.createElement("div");
+    deviceRow.classList.add("device-row");
 
+    // Checkbox for selection
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
-    checkbox.value = device; // ✅ Fixed
-
+    checkbox.value = device;
     checkbox.style.marginRight = "8px";
 
-    // const userIcon = document.createElement("img");
-    // userIcon.src = "https://cdn-icons-png.flaticon.com/128/1144/1144760.png";
-    // userIcon.alt = "UserIcon";
-    // userIcon.style.width = "20px";
-    // userIcon.style.height = "20px";
-    // userIcon.style.marginRight = "5px";
+    // User Icon
+    const userIcon = document.createElement("img");
+    userIcon.src = "https://cdn-icons-png.flaticon.com/128/1144/1144760.png";
+    userIcon.alt = "User Icon";
+    userIcon.classList.add("user-icon");
 
+    // Device Name
     const deviceText = document.createElement("span");
-    deviceText.textContent = device === user ? `${device} (you)` : device; // ✅ Fixed
-    deviceText.style.width = "200px";
-    deviceItem.appendChild(checkbox);
-    // deviceItem.appendChild(userIcon);
-    deviceItem.appendChild(deviceText);
-    dropdownList.appendChild(deviceItem);
+    deviceText.textContent = device === user ? `${device} (you)` : device;
 
-    deviceItem.addEventListener("change", (e) => {
-      e.stopPropagation();
-      checkbox.checked = !checkbox.checked;
+    // Append elements to row
+    deviceRow.appendChild(checkbox);
+    deviceRow.appendChild(userIcon);
+    deviceRow.appendChild(deviceText);
+    deviceContainer.appendChild(deviceRow);
 
+    // Checkbox event listener
+    checkbox.addEventListener("change", () => {
       if (checkbox.checked) {
         selectedDevices.add(device);
       } else {
         selectedDevices.delete(device);
       }
-
-      updateDropdownButton();
+      console.log("Selected devices:", Array.from(selectedDevices));
     });
   });
 
-  function updateDropdownButton() {
-    if (selectedDevices.size > 0) {
-      dropdownButton.textContent = Array.from(selectedDevices).join(", ");
-    } else {
-      dropdownButton.textContent = "Select devices";
-    }
-  }
-
-  dropdownButton.addEventListener("click", () => {
-    dropdownList.classList.toggle("show");
-  });
-
-  dropdown.appendChild(dropdownButton);
-  dropdown.appendChild(dropdownList);
-  deviceListBox.appendChild(dropdown);
-
-  console.log("Updated device list:", devices);
+  deviceListBox.appendChild(deviceContainer);
 }
 
 function displayRecievedFile(sender, fileName, fileData) {

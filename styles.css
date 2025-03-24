@@ -95,48 +95,42 @@ button {
 button:hover {
   background: #0056b3;
 }
-
-.custom-dropdown {
-  position: relative;
-  display: inline-block;
-  width: 300px;
+.device-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Spacing between rows */
 }
 
-.dropdown-button {
-  width: 100%;
-  padding: 8px;
-  font-size: 16px;
-  cursor: pointer;
-  border: 1px solid #ccc;
-  background-color: white;
-  text-align: left;
-}
-
-.dropdown-list {
-  display: none;
-  position: absolute;
-  width: 100%;
-  background: white;
-  border: 1px solid #ccc;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  max-height: 200px;
-  overflow-y: auto;
-  z-index: 10;
-}
-
-.dropdown-item {
+.device-row {
   display: flex;
   align-items: center;
-  padding: 8px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #f9f9f9;
+}
+
+.user-icon {
+  width: 30px;
+  height: 30px;
+  /* margin-right: 10px; */
+}
+
+.messageBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.file-input {
+  display: none; /* Hide default file input */
+}
+
+.file-label {
+  display: inline-block;
   cursor: pointer;
 }
 
-.dropdown-item:hover {
-  background-color: #f0f0f0;
-}
-
-.show {
-  display: block;
+.file-icon {
+  width: 20px;
+  height: 20px;
 }
