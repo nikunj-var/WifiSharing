@@ -106,7 +106,7 @@ function updateDeviceList(devices, user) {
 function displayRecievedFile(sender, fileName, fileData) {
   const fileInput = document.getElementById("messages");
   const fileLink = document.createElement("a");
-  fileLink.href = `data:application/octet-stream;base64,${fileInput}`;
+  fileLink.href = `data:application/octet-stream;base64,${fileData}`;
   fileLink.download = fileName;
   fileLink.innerHTML = `<b>${sender}:</b> ${fileName}(Click to download)`;
   fileLink.style.display = "block";
