@@ -86,21 +86,81 @@ function updateChat(sender, message, type) {
 
 function updateDeviceList(devices, user) {
   const deviceListBox = document.getElementById("devices");
+
+  const selectedDevices = new Set();
+
   if (!deviceListBox) {
-    console.error(" deviceListBox not found!");
+    console.error("deviceListBox not found!");
     return;
   }
   deviceListBox.innerHTML = "<h3>Available Devices:</h3>";
+
+  const dropdown = document.createElement("div");
+  dropdown.classList.add("custom-dropdown");
+
+  const dropdownButton = document.createElement("button");
+  dropdownButton.textContent = "Select a device";
+  dropdownButton.classList.add("dropdown-button");
+
+  const dropdownList = document.createElement("ul");
+  dropdownList.classList.add("dropdown-list"); // ✅ Fixed
+
   devices.forEach((device) => {
-    const deviceItem = document.createElement("p");
-    if (device === user) {
-      deviceItem.textContent = device + " (you)";
-    } else {
-      deviceItem.textContent = device;
-    }
-    deviceListBox.appendChild(deviceItem);
+    const deviceItem = document.createElement("li");
+    deviceItem.classList.add("dropdown-item");
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.value = device; // ✅ Fixed
+
+    checkbox.style.marginRight = "8px";
+
+    // const userIcon = document.createElement("img");
+    // userIcon.src = "https://cdn-icons-png.flaticon.com/128/1144/1144760.png";
+    // userIcon.alt = "UserIcon";
+    // userIcon.style.width = "20px";
+    // userIcon.style.height = "20px";
+    // userIcon.style.marginRight = "5px";
+
+    const deviceText = document.createElement("span");
+    deviceText.textContent = device === user ? `${device} (you)` : device; // ✅ Fixed
+    deviceText.style.width = "200px";
+    deviceItem.appendChild(checkbox);
+    // deviceItem.appendChild(userIcon);
+    deviceItem.appendChild(deviceText);
+    dropdownList.appendChild(deviceItem);
+
+    deviceItem.addEventListener("change", (e) => {
+      e.stopPropagation();
+      checkbox.checked = !checkbox.checked;
+
+      if (checkbox.checked) {
+        selectedDevices.add(device);
+      } else {
+        selectedDevices.delete(device);
+      }
+
+      updateDropdownButton();
+    });
   });
-  console.log("update device list", devices);
+
+  function updateDropdownButton() {
+    if (selectedDevices.size > 0) {
+      dropdownButton.textContent = Array.from(selectedDevices).join(", ");
+    } else {
+      dropdownButton.textContent = "Select devices";
+    }
+  }
+
+  dropdownButton.addEventListener("click", () => {
+    dropdownList.classList.toggle("show");
+  });
+
+  dropdown.appendChild(dropdownButton);
+  dropdown.appendChild(dropdownList);
+  deviceListBox.appendChild(dropdown);
+
+  console.log("Updated device list:", devices);
 }
 
 function displayRecievedFile(sender, fileName, fileData) {
@@ -112,3 +172,12 @@ function displayRecievedFile(sender, fileName, fileData) {
   fileLink.style.display = "block";
   fileInput.appendChild(fileLink);
 }
+
+// if (device === user) {
+//   deviceItem.appendChild(document.createTextNode(device + " (you)"));
+// } else {
+//   deviceItem.appendChild(document.createTextNode(device));
+// }
+// deviceItem.style.display = "flex";
+// deviceItem.style.alignItems = "center";
+// deviceItem.style.justifyContent = "center";
