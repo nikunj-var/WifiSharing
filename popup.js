@@ -1,6 +1,7 @@
 const socket = new WebSocket("ws://localhost:3000");
 
 const username = "";
+const selectedDevices = new Set();
 
 socket.onopen = () => {
   console.log("Connected to websocket server");
@@ -27,12 +28,19 @@ document.getElementById("sendBtn").addEventListener("click", () => {
 
   let sent = false;
 
+  const recipients = Array.from(selectedDevices);
+  if (recipients.length === 0) {
+    alert("Please select at least one recipient");
+    return;
+  }
+
   if (message !== "" && socket.readyState === WebSocket.OPEN) {
     if (message.trim() !== "") {
       const messageData = {
         type: "MESSAGE",
         sender: username,
         message: message,
+        recipients: recipients,
       };
 
       socket.send(JSON.stringify(messageData)); // ✅ Now inside the if block
@@ -163,6 +171,7 @@ function updateChat(sender, message, type) {
 
 //   console.log("Updated device list:", devices);
 // }
+
 function updateDeviceList(devices, user) {
   const deviceListBox = document.getElementById("devices");
 
@@ -171,8 +180,6 @@ function updateDeviceList(devices, user) {
     return;
   }
   deviceListBox.innerHTML = "<h3>Available Devices:</h3>";
-
-  const selectedDevices = new Set();
 
   const deviceContainer = document.createElement("div");
   deviceContainer.classList.add("device-container");

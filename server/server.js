@@ -33,7 +33,8 @@ wss.on("connection", (ws) => {
             fileName: messageData.fileName,
             fileData: messageData.fileData,
           },
-          ws
+          ws,
+          messageData.recipients
         );
       } else if (messageData.type === "MESSAGE") {
         console.log(`Received from ${clients.get(ws)}: ${messageData.message}`);
@@ -43,7 +44,8 @@ wss.on("connection", (ws) => {
             sender: clients.get(ws),
             message: messageData.message,
           },
-          ws
+          ws,
+          messageData.recipients
         );
       }
     } catch (err) {
@@ -75,7 +77,11 @@ function broadCastDeviceList() {
 
 function broadCast(data, ws) {
   wss.clients.forEach((client) => {
-    if (client !== ws && client.readyState === WebSocket.OPEN) {
+    if (
+      client !== ws &&
+      client.readyState === WebSocket.OPEN &&
+      recipients.includes(clients.get(client))
+    ) {
       client.send(JSON.stringify(data));
     }
   });
